@@ -1,0 +1,22 @@
+{
+  "name": "tic-tac-pol",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start" : "webpack-dev-server --content-base .\\public\\",
+    "build": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0-pre.1",
+    "polymer-redux": "github:moebiusmania/polymer-redux",
+    "tic-tac-redux": "file:../tic-tac-redux"
+  },
+  "devDependencies": {
+    "webpack": "^3.5.6",
+    "webpack-dev-server": "^2.8.2"
+  }
+}
