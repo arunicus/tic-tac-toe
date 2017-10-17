@@ -2,43 +2,6 @@ npm install redux
 
 npm install expect
 
-
-step 1: writing a pure function
-
-Before we proceed any further, it's important that you understand the difference between the pure and impure functions. 
-The pure functions are the functions whose returned value depends solely on the values of their arguments.
-
-Pure functions do not have any observable side effects, such as network or database calls. 
-The pure functions just calculate the new value. You can be confident that if you call the pure function with the same set of arguments, 
-you're going to get the same returned value. They are predictable.
-
-Also, pure functions do not modify the values passed to them. 
-For example, squareAll function that accepts an array does not overwrite the items inside this array. 
-Instead, it returns a new array by using items map
-
-On the opposite, impure functions may call the database or the network, they may have side effects, 
-they may operate on the DOM, and they may override the values that you pass to them. 
-This is going to be an important distinction because some of the functions that you're going to write in Redux have to be pure,
- and you need to be mindful of that.
-
-You might have heard that the UI or the view layer is most predictable when it is described as a pure function of the application state. 
-This approach was pioneered by React but is now being picked up by other frameworks, such as Ember and Angular.
-
-Redux complements this approach with another idea, that the state mutations in your app need to be described as a pure function that takes
- the previous state and the action being dispatched and returns the next state of your application.
-
-Inside any Redux application, there is one particular function that takes the state of the whole application and the action being 
-dispatched and returns the next state of the whole application. It is important that it does not modify the state given to it. 
-It has to be pure, so it has to return a new object.
-
-Even in large applications, there is still just a single function that manages how the next state is calculated based on
- the previous state of the whole application and the action being dispatched. It does not have to be slow.
-
-
- Now you know the third and the last principle of Redux. To describe state mutations, 
- you have to write a function that takes the previous state of the app, the action being dispatched, 
- and returns the next state of the app. This function has to be pure. This function is called the "Reducer."
-
 let expect = require('expect')
 
 function counter(state, action){
@@ -49,6 +12,7 @@ expect(counter(0, {})).toEqual(1)
 
 
 step 2 : testing the pure function
+
 let expect = require('expect')
 
 function counter(state = 0, action){
@@ -59,6 +23,16 @@ function counter(state = 0, action){
             return state - 1
     }
     return state
+}
+
+
+let actionCreators = {
+    increment: () => {
+        return {type: 'INC'}
+    },
+    decrement: () => {
+        return {type: 'DEC'}
+    }
 }
 
 expect(counter(0, {})).toEqual(0)
@@ -98,7 +72,7 @@ store.dispatch({type: 'INC'})
 store.dispatch({type: 'INC'})
 store.dispatch({type: 'INC'})
 
-
+\b[_\S\d-]+@[_\S\d-]+\.[\S]{2,3}\b
 
 step 4: using redux in standalone html
 // let expect = require('expect')
@@ -137,11 +111,12 @@ function decrementClicked(params) {
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Learn Redux</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.0.5/redux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux-thunk/2.2.0/redux-thunk.min.js"></script>
     <script src="./test.js"></script>
   </head>
   <body>
-      <h1 id="current">0</h1>
+      <h1 id="counter">0</h1>
       <input id="countValue" value="1" />
       <button onclick="incrementClicked()" >increment</button>
       <button onclick="decrementClicked()" >decrement</button>
@@ -191,7 +166,7 @@ function weather(state = 0, action) {
     return state
 }
 
-function getTempratureforZip(zipeCode) {
+function getTemperatureForZip(zipCode) {
     return (dispatch, getState) => {
         fetch('http://samples.openweathermap.org/data/2.5/weather?zip=10018,us&appid=b1b15e88fa797225412429c1c50c122a1')
             .then(res => {
@@ -210,8 +185,359 @@ store.subscribe(() => {
     state
 })
 
-store.dispatch(getTempratureforZip('10018'))
+store.dispatch(getTemperatureForZip('10018'))
+
+END 
+
+
+
+const {createStore, applyMiddleware} = Redux
+const thunk = ReduxThunk.default
+
+function counter(state=0, action={}) {
+    let value = action.value || 1;
+    switch (action.type) {
+        case 'INC':
+            return state + value
+        case 'DEC':
+            return state - value
+    }
+    return state;
+}
+
+let actionCreators = {
+    increment: () => {
+        return {type: 'INC'}
+    },
+    incrementDelayed: () => {
+        return (dispatch, getState) => {
+            setTimeout(function() {
+                dispatch({type: 'INC'})
+            }, 2000);
+        }
+    },
+    decrement: () => {
+        return {type: 'DEC'}
+    }
+}
+
+
+
+let store = createStore(counter, applyMiddleware(thunk))
+
+store.subscribe(() => {
+    document.querySelector('#counter').innerHTML = store.getState();
+})
+
+function incrementClicked(params) {
+        document.querySelector('#counter').innerHTML = '...';
+
+    store.dispatch(actionCreators.incrementDelayed());
+}
 
 
 
 
+	"Example 1": {
+		"prefix": "ex1",
+		"body": [
+			"let expect = require('expect')",
+			"",
+			"function counter(state, action) {",
+			"    return state",
+			"}",
+			"",
+			"expect(counter(0, {})).toEqual(1)"
+		],
+		"description": "Example 1"
+	},
+	"Example 2": {
+		"prefix": "ex2",
+		"body": [
+			"let expect = require('expect')",
+			"",
+			"function counter(state = 0, action){",
+			"    switch(action.type){",
+			"        case 'INC':",
+			"            return state + 1",
+			"        case 'DEC':",
+			"            return state - 1",
+			"    }",
+			"    return state",
+			"}",
+			"",
+			"",
+			"expect(counter(0, {})).toEqual(0)",
+			"",
+			"expect(counter(0, {type: 'INC'})).toEqual(1)",
+			"",
+			"expect(counter(1, {type: 'INC'})).toEqual(2)",
+			"",
+			"expect(counter(1, {type: 'DEC'})).toEqual(0)",
+			"",
+			"expect(counter(1, {type: 'IDONTKNOW'})).toEqual(1)"
+		],
+		"description": "Example 2"
+	},
+	"Example 3": {
+		"prefix": "ex3",
+		"body": [
+			"let expect = require('expect')",
+			"",
+			"function counter(state = 0, action){",
+			"    switch(action.type){",
+			"        case 'INC':",
+			"            return state + 1",
+			"        case 'DEC':",
+			"            return state - 1",
+			"    }",
+			"    return state",
+			"}",
+			"",
+			"",
+			"let actionCreators = {",
+			"    increment: () => {",
+			"        return {type: 'INC'}",
+			"    },",
+			"    decrement: () => {",
+			"        return {type: 'DEC'}",
+			"    }",
+			"}",
+			"",
+			"expect(counter(0, {})).toEqual(0)",
+			"",
+			"expect(counter(0, actionCreators.increment())).toEqual(1)",
+			"",
+			"expect(counter(1, actionCreators.increment())).toEqual(2)",
+			"",
+			"expect(counter(1, actionCreators.decrement())).toEqual(0)"
+		],
+		"description": "Example "
+	},
+	"Example 4": {
+		"prefix": "ex4",
+		"body": [
+			"const {createStore} = require('redux')",
+			"",
+			"function counter(state = 0, action){",
+			"    switch(action.type){",
+			"        case 'INC':",
+			"            return state + 1",
+			"        case 'DEC':",
+			"            return state - 1",
+			"    }",
+			"    return state",
+			"}",
+			"",
+			"",
+			"let actionCreators = {",
+			"    increment: () => {",
+			"        return {type: 'INC'}",
+			"    },",
+			"    decrement: () => {",
+			"        return {type: 'DEC'}",
+			"    }",
+			"}",
+			"",
+			"const store = createStore(counter)",
+			"",
+			"store.subscribe(()=>{",
+			"    console.log(store.getState())",
+			"})",
+			"",
+			"store.dispatch(actionCreators.increment())",
+			"store.dispatch(actionCreators.increment())",
+			"store.dispatch(actionCreators.decrement())"
+		],
+		"description": "Example 4"
+	},
+	"html 1": {
+		"prefix": "html1",
+		"body": [
+			"const {createStore} = Redux;",
+			"",
+			"function counter(state = 0, action){",
+			"    switch(action.type){",
+			"        case 'INC':",
+			"            return state + 1",
+			"        case 'DEC':",
+			"            return state - 1",
+			"    }",
+			"    return state",
+			"}",
+			"",
+			"",
+			"let actionCreators = {",
+			"    increment: () => {",
+			"        return {type: 'INC'}",
+			"    },",
+			"    decrement: () => {",
+			"        return {type: 'DEC'}",
+			"    }",
+			"}",
+			"",
+			"const store = createStore(counter)",
+			"",
+			"store.subscribe(() => {",
+			"    document.querySelector('#counter').innerHTML = store.getState();",
+			"})",
+			"",
+			"function incrementClicked() {",
+			"    store.dispatch(actionCreators.increment());    ",
+			"}",
+			"",
+			"function decrementClicked(params) {",
+			"    store.dispatch(actionCreators.decrement());",
+			"}"
+		],
+		"description": "Example 4"
+	},
+	"html 2": {
+		"prefix": "html2",
+		"body": [
+			"const {createStore} = Redux;",
+			"",
+			"function counter(state=0, action={}) {",
+			"    let value = action.value || 1;",
+			"    switch (action.type) {",
+			"        case 'INC':",
+			"            return state + value",
+			"        case 'DEC':",
+			"            return state - value",
+			"    }",
+			"    return state;",
+			"}",
+			"",
+			"",
+			"let actionCreators = {",
+			"    increment: () => {",
+			"        return {type: 'INC'}",
+			"    },",
+			"    decrement: () => {",
+			"        return {type: 'DEC'}",
+			"    },",
+			"    incrementValue: (value) => {",
+			"        return {type: 'INC', value}",
+			"    },",
+			"    decrementValue: (value) => {",
+			"        return {type: 'DEC', value}",
+			"    },",
+			"}",
+			"",
+			"const store = createStore(counter)",
+			"",
+			"store.subscribe(() => {",
+			"    document.querySelector('#counter').innerHTML = store.getState();",
+			"})",
+			"",
+			"function incrementClicked() {",
+			"    let value = parseInt(document.querySelector('#countValue').value);",
+			"    store.dispatch(actionCreators.incrementValue(value));    ",
+			"}",
+			"",
+			"function decrementClicked(params) {",
+			"    let value = parseInt(document.querySelector('#countValue').value);",
+			"    store.dispatch(actionCreators.decrementValue(value));",
+			"}"
+		],
+		"description": "Example 4"
+	},
+	"html 3": {
+		"prefix": "html3",
+		"body": [
+			"const {createStore,applyMiddleware} = Redux;",
+			"const thunk = ReduxThunk.default",
+			"",
+			"function counter(state=0, action={}) {",
+			"    let value = action.value || 1;",
+			"    switch (action.type) {",
+			"        case 'INC':",
+			"            return state + value",
+			"        case 'DEC':",
+			"            return state - value",
+			"    }",
+			"    return state;",
+			"}",
+			"",
+			"",
+			"let actionCreators = {",
+			"    increment: () => {",
+			"        return {type: 'INC'}",
+			"    },",
+			"    decrement: () => {",
+			"        return {type: 'DEC'}",
+			"    },",
+			"    incrementDelayed: () => {",
+			"        return (dispatch, getState) => {",
+			"            setTimeout(function() {",
+			"                dispatch({type: 'INC'})",
+			"            }, 1000);",
+			"        }",
+			"    },",
+			"    incrementValue: (value) => {",
+			"        return {type: 'INC', value}",
+			"    },",
+			"    decrementValue: (value) => {",
+			"        return {type: 'DEC', value}",
+			"    },",
+			"}",
+			"",
+			"const store = createStore(counter,applyMiddleware(thunk))",
+			"",
+			"store.subscribe(() => {",
+			"    document.querySelector('#counter').innerHTML = store.getState();",
+			"})",
+			"",
+			"function incrementClicked() {",
+			"    let value = parseInt(document.querySelector('#countValue').value);",
+			"    store.dispatch(actionCreators.incrementDelayed());    ",
+			"}",
+			"",
+			"function decrementClicked(params) {",
+			"    let value = parseInt(document.querySelector('#countValue').value);",
+			"    store.dispatch(actionCreators.decrementValue(value));",
+			"}"
+		],
+		"description": "Example 4"
+	},
+	"weater": {
+		"prefix": "weat",
+		"body": [
+			"const { createStore, applyMiddleware } = require('redux');",
+			"const thunk = require('redux-thunk').default;",
+			"var fetch = require('node-fetch');",
+			"",
+			"function weatherReducer(state = 0, action) {",
+			"    switch (action.type) {",
+			"        case 'DESC':",
+			"            return action.description",
+			"    }",
+			"    return state",
+			"}",
+			"",
+			"let actionCreator = {",
+			"    getTemperatureAction: (zipCode) => {",
+			"        return (dispatch, getState) => {",
+			"            fetch(`http://samples.openweathermap.org/data/2.5/weather?zip=zipCode,us&appid=b1b15e88fa797225412429c1c50c122a1`)",
+			"                .then(res => {",
+			"                    let reponseJson = res.json()",
+			"                    reponseJson.then(json => {",
+			"                        // json",
+			"                        dispatch({ type: 'DESC', description: json.weather[0].description })",
+			"                    })",
+			"                })",
+			"        }",
+			"    }",
+			"}",
+			"",
+			"const store = createStore(weatherReducer, applyMiddleware(thunk))",
+			"",
+			"store.subscribe(() => {",
+			"    let state = store.getState()",
+			"    state",
+			"})",
+			"",
+			"store.dispatch(actionCreator.getTemperatureAction('07070'))"
+		],
+		"description": "Example 4"
+	},

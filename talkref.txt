@@ -1,0 +1,116 @@
+The state of your whole application is stored in an object tree within a single store.
+
+Whole state of your application as a single JavaScript object.
+All mutations and changes of state in Redux are explicit
+Easy debugging and development
+
+
+The first principle of Redux is whether your app is a really simple one like this counter example, or a complex application with a lot of UI, and change of state, you are going to represent the whole state of your application as a single JavaScript object.
+
+All mutations, and changes the state in Redux are explicit. It is possible to keep track of all of them. In this case, I am logging every state change in the application in the console. You can see that, in the counter example, there isn't really much state to keep track of so it can be represented by a JavaScript number.
+
+Now you know the first principle of Redux, which is that, everything that changes in your application, including the data and the UI state, is contained in a single object, we call the state or the state tree.
+
+This makes it easy to create universal apps, as the state from your server can be serialized and hydrated into the client with no extra coding effort. A single state tree also makes it easier to debug or inspect an application; it also enables you to persist your app's state in development, for a faster development cycle. Some functionality which has been traditionally difficult to implement - Undo/Redo, for example - can suddenly become trivial to implement, if all of your state is stored in a single tree.
+
+Your app reads the state from this store,  store is never mutated directly
+
+This makes it easy to create universal apps, as the state from your server can be serialized and hydrated into the client with no extra coding effort. A single state tree also makes it easier to debug or inspect an application; it also enables you to persist your app's state in development, for a faster development cycle. Some functionality which has been traditionally difficult to implement - Undo/Redo, for example - can suddenly become trivial to implement, if all of your state is stored in a single tree.
+
+
+They express an intent to transform the state
+Dispatch an action for mutations and changes to state
+Only requirement is that it has a type property
+Describing in the minimal way what changed in the application
+
+
+The only way to change the state is to emit an action, an object describing what happened.
+This ensures that neither the views nor the network callbacks will ever write directly to the state. Instead, they express an intent to transform the state. Because all changes are centralized and happen one by one in a strict order, there are no subtle race conditions to watch out for. As actions are just plain objects, they can be logged, serialized, stored, and later replayed for debugging or testing purposes.
+
+User interaction (and other code) fires actions which describe what happened
+
+The second principle of Redux is that the state tree is read only. You cannot modify or write to it. Instead, anytime you want to change the state, you need to dispatch an action.
+An action is a plain JavaScript object describing the change. Just like the state is the minimal representation of the data in your app, the action is the minimal representation of the change to that data.
+
+The structure of the action object is up to you. The only requirement is that it has a type property, which is not undefined. We suggest using strings, because they are serializable.
+Now you know the second principle of Redux -- the state is read only. The only way to change the state tree is by dispatching an action. An action is a plain JavaScript object, describing in the minimal way what changed in the application. Whether it is initiated by a network request or by user interaction, any data that gets into the Redux application gets there by actions.
+
+
+Returned value depends solely on the arguments.
+No observable side effects
+Predictable
+Do not modify the values passed to them
+Reducers - pure function ( state, action) => new state
+
+To specify how the state tree is transformed by actions, you write pure reducers.
+Reducers are just pure functions that take the previous state and an action, and return the next state. Remember to return new state objects, instead of mutating the previous state. You can start with a single reducer, and as your app grows, split it off into smaller reducers that manage specific parts of the state tree. Because reducers are just functions, you can control the order in which they are called, pass additional data, or even make reusable reducers for common tasks such as pagination.
+
+A new state is created by combining he old state and the action by a function called the reducer.
+
+
+Pure and Impure Functions
+Before we proceed any further, it's important that you understand the difference between the pure and impure functions. The pure functions are the functions whose returned value depends solely on the values of their arguments.
+Pure functions do not have any observable side effects, such as network or database calls. The pure functions just calculate the new value. You can be confident that if you call the pure function with the same set of arguments, you're going to get the same returned value. They are predictable.
+Also, pure functions do not modify the values passed to them. For example, squareAll function that accepts an array does not overwrite the items inside this array. Instead, it returns a new array by using items map.
+On the opposite, impure functions may call the database or the network, they may have side effects, they may operate on the DOM, and they may override the values that you pass to them. This is going to be an important distinction because some of the functions that you're going to write in Redux have to be pure, and you need to be mindful of that.
+
+You might have heard that the UI or the view layer is most predictable when it is described as a pure function of the application state. 
+This approach was pioneered by React but is now being picked up by other frameworks, such as Ember and Angular.
+
+Redux complements this approach with another idea, that the state mutations in your app need to be described as a pure function that takes
+ the previous state and the action being dispatched and returns the next state of your application.
+
+Inside any Redux application, there is one particular function that takes the state of the whole application and the action being 
+dispatched and returns the next state of the whole application. It is important that it does not modify the state given to it. 
+It has to be pure, so it has to return a new object.
+
+Even in large applications, there is still just a single function that manages how the next state is calculated based on
+ the previous state of the whole application and the action being dispatched. It does not have to be slow.
+
+
+ Now you know the third and the last principle of Redux. To describe state mutations, 
+ you have to write a function that takes the previous state of the app, the action being dispatched, 
+ and returns the next state of the app. This function has to be pure. This function is called the "Reducer."
+
+
+You might have heard that the UI or the view layer is most predictable when it is described as a pure function of the application state. This approach was pioneered by React but is now being picked up by other frameworks, such as Ember and Angular.
+Redux complements this approach with another idea, that the state mutations in your app need to be described as a pure function that takes the previous state and the action being dispatched and returns the next state of your application.
+Inside any Redux application, there is one particular function that takes the state of the whole application and the action being dispatched and returns the next state of the whole application. It is important that it does not modify the state given to it. It has to be pure, so it has to return a new object.
+Even in large applications, there is still just a single function that manages how the next state is calculated based on the previous state of the whole application and the action being dispatched. It does not have to be slow.
+For example, if I change the visibility filter, I have to create a new object for the whole state, but I can keep the reference to the previous version of the todos rate, because it has not changed when I changed the visibility filter. This is what makes Redux fast.
+Now you know the third and the last principle of Redux. To describe state mutations, you have to write a function that takes the previous state of the app, the action being dispatched, and returns the next state of the app. This function has to be pure. This function is called the "Reducer."
+
+
+
+The state of your whole application is stored in an object tree within a single store.
+This makes it easy to create universal apps, as the state from your server can be serialized and hydrated into the client with no extra coding effort. A single state tree also makes it easier to debug or inspect an application; it also enables you to persist your app's state in development, for a faster development cycle. Some functionality which has been traditionally difficult to implement - Undo/Redo, for example - can suddenly become trivial to implement, if all of your state is stored in a single tree.
+
+Your app reads the state from this store,  store is never mutated directly
+
+
+The only way to change the state is to emit an action, an object describing what happened.
+This ensures that neither the views nor the network callbacks will ever write directly to the state. Instead, they express an intent to transform the state. Because all changes are centralized and happen one by one in a strict order, there are no subtle race conditions to watch out for. As actions are just plain objects, they can be logged, serialized, stored, and later replayed for debugging or testing purposes.
+
+User interaction (and other code) fires actions which describe what happened
+
+To specify how the state tree is transformed by actions, you write pure reducers.
+Reducers are just pure functions that take the previous state and an action, and return the next state. Remember to return new state objects, instead of mutating the previous state. You can start with a single reducer, and as your app grows, split it off into smaller reducers that manage specific parts of the state tree. Because reducers are just functions, you can control the order in which they are called, pass additional data, or even make reusable reducers for common tasks such as pagination.
+
+A new state is created by combining he old state and the action by a function called the reducer.
+
+
+Pure and Impure Functions
+Before we proceed any further, it's important that you understand the difference between the pure and impure functions. The pure functions are the functions whose returned value depends solely on the values of their arguments.
+Pure functions do not have any observable side effects, such as network or database calls. The pure functions just calculate the new value. You can be confident that if you call the pure function with the same set of arguments, you're going to get the same returned value. They are predictable.
+Also, pure functions do not modify the values passed to them. For example, squareAll function that accepts an array does not overwrite the items inside this array. Instead, it returns a new array by using items map.
+On the opposite, impure functions may call the database or the network, they may have side effects, they may operate on the DOM, and they may override the values that you pass to them. This is going to be an important distinction because some of the functions that you're going to write in Redux have to be pure, and you need to be mindful of that.
+
+
+
+
+
+
+
+
+
+

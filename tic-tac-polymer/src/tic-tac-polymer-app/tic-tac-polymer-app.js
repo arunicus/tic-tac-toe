@@ -87,7 +87,7 @@ class TicTacButton extends ReduxMixin(PolymerElement) {
   static get is() { return 'tic-tac-button'; }
   static get template() {
     return `
-      <button on-click="buttonClicked" style="width:40px;height:40px;vertical-align:top;background-color:{{item.color}}">[[item.value]]</button>
+      <button on-click="buttonClicked" style="width:40px;height:40px;vertical-align:top;background-color:{{item.color}};color:white">[[item.value]]</button>
     `;
   }
   static get properties() {

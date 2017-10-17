@@ -18630,9 +18630,9 @@ const playMove = (boardState, row, position, symbol) => {
 
 const initialState = {
   board: {
-    0: [{value:'', color:'green', highlight: false}, {value:'', color:'green', highlight: false}, {value:'', color:'green', highlight: false}],
-    1: [{value:'', color:'green', highlight: false}, {value:'', color:'green', highlight: false}, {value:'', color:'green', highlight: false}],
-    2: [{value:'', color:'green', highlight: false}, {value:'', color:'green', highlight: false}, {value:'', color:'green', highlight: false}]
+    0: [{row:0, position:0, value:'', color:'green', highlight: false}, {row:0, position:1, value:'', color:'green', highlight: false}, {row:0, position:2, value:'', color:'green', highlight: false}],
+    1: [{row:1, position:0, value:'', color:'green', highlight: false}, {row:1, position:1, value:'', color:'green', highlight: false}, {row:1, position:2, value:'', color:'green', highlight: false}],
+    2: [{row:2, position:0, value:'', color:'green', highlight: false}, {row:2, position:1, value:'', color:'green', highlight: false}, {row:2, position:2, value:'', color:'green', highlight: false}]
   },
   won: undefined,
   draw: false,
