@@ -19,7 +19,7 @@ class TicTacPolymerApp extends ReduxMixin(PolymerElement) {
           display: block;
         }
       </style>
-      
+      <h1>Redux with  Polymer</h1>
       <template is="dom-if" if="{{turn}}">
         <h2>Hello player this turn [[turn]]</h2>
       </template>

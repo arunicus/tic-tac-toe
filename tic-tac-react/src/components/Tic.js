@@ -3,6 +3,7 @@ import React from 'react'
 const Tic = ({ wonFlag, boardState, turn, addSymbol,startAgain }) => {
     return (
         <div>
+            <h1>Redux with React</h1>
             <Header wonFlag={wonFlag} turn = {turn} startAgain={startAgain}/>
             {Object.keys(boardState).map(row => <Row row={boardState[row]} key={row} rowNum={row} addSymbol={(rowNum, position) => { addSymbol(boardState, rowNum, position, turn) }} />)}
         </div>
